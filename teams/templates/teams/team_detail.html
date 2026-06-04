@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    </head>
+<body>
+    <div class="card">
+        <h1>{{ team.name }}</h1>
+        <p>{{ team.description }}</p>
+
+        {% if can_edit %}
+            <div style="background: #e9ecef; padding: 15px; border-radius: 5px; margin-top: 15px;">
+                <strong style="color: #495057;">🔧 管理員控制台：</strong>
+                <a href="{% url 'edit_team' team.id %}" class="btn" style="background: #6c757d;">編輯簡介</a>
+                <a href="{% url 'create_announcement' team.id %}" class="btn">發布公告</a>
+                <a href="{% url 'create_event' team.id %}" class="btn" style="background: #28a745;">新增活動到行事曆</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <h2>📅 近期活動</h2>
+    <div class="card">
+        <ul>
+            {% for event in team_events %}
+                <li>
+                    <strong>{{ event.title }}</strong><br>
+                    <small>時間：{{ event.start_time|date:"Y-m-d H:i" }} ~ {{ event.end_time|date:"Y-m-d H:i" }}</small>
+                </li>
+            {% empty %}
+                <p>目前沒有即將到來的活動。</p>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <h2>📢 最新公告</h2>
+    <div class="card">
+        {% for info in announcements %}
+            {% endfor %}
+    </div>
+</body>
+</html>

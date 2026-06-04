@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ team.name }}</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; background: #f9f9f9; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .btn { background: #007bff; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; display: inline-block; }
+        .announcement { border-left: 4px solid #007bff; padding-left: 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>{{ team.name }}</h1>
+        <p>{{ team.description }}</p>
+        <p><strong>負責人：</strong> {{ team.leader.username|default:"暫無" }}</p>
+
+        <!-- 只有當 can_edit 為 True (也就是隊長本人) 才會渲染這個按鈕 -->
+        {% if can_edit %}
+            <a href="{% url 'create_announcement' team.id %}" class="btn">發布新公告</a>
+        {% endif %}
+    </div>
+
+    <h2>最新公告</h2>
+    <div class="card">
+        {% for info in announcements %}
+            <div class="announcement">
+                <h3>{{ info.title }}</h3>
+                <p>{{ info.content }}</p>
+                <small>時間：{{ info.created_at|date:"Y-m-d H:i" }} | By {{ info.author.username }}</small>
+            </div>
+        {% empty %}
+            <p>目前沒有任何公告。</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>台灣大學電機系學生網站</title>
+    <style>
+        /* 這裡將 max-width 改為 1000px，讓左右排版的空間更充裕 */
+        body { font-family: sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .btn { background: #007bff; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; }
+        .btn-logout { background: #dc3545; }
+        
+        /* 公佈欄樣式 */
+        .global-announcement { background: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-bottom: 15px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .global-announcement h4 { margin: 0 0 10px 0; color: #856404; }
+        
+        /* 系隊卡片樣式 */
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+        .team-card { background: white; padding: 15px; border-radius: 8px; border-top: 5px solid #007bff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .team-card a { text-decoration: none; color: #333; font-weight: bold; font-size: 1.2em; display: block; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>⚡ 台灣大學電機系學生網站</h2>
+        <div>
+            <!-- <a href="{% url 'calendar_page' %}" class="btn" style="background: #28a745; margin-right: 10px;">📅 系上行事曆</a> -->
+
+            {% if user.is_authenticated %}
+                <span>你好，{{ user.username }} 同學！</span>
+                <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-logout" style="width: auto; padding: 6px 12px; margin-left: 10px;">登出</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn">學生登入</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 20px; align-items: flex-start;">
+        
+        <div style="flex: 3; min-width: 0;">
+            
+            <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 0;">📢 系級公告</h3>
+            
+            <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <strong>📁 分類：</strong>
+                <a href="{% url 'team_list' %}" class="btn" style="padding: 4px 8px; font-size: 0.9em; {% if not current_category and not current_tag %}background: #0056b3;{% endif %}">全部</a>
+                {% for cat_value, cat_name in categories %}
+                    <a href="?category={{ cat_value }}" class="btn" style="padding: 4px 8px; font-size: 0.9em; {% if current_category == cat_value %}background: #0056b3;{% endif %}">{{ cat_name }}</a>
+                {% endfor %}
+                
+                <br><br>
+                
+                <strong>🏷️ 標籤：</strong>
+                {% for tag in all_tags %}
+                    <a href="?tag={{ tag.name }}" style="display: inline-block; background: #e9ecef; color: #495057; padding: 3px 8px; border-radius: 12px; text-decoration: none; font-size: 0.85em; margin-right: 5px; {% if current_tag == tag.name %}background: #6c757d; color: white;{% endif %}">
+                        #{{ tag.name }}
+                    </a>
+                {% endfor %}
+            </div>
+
+            <ul style="list-style-type: none; padding: 0; margin: 0; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                {% for post in global_announcements %}
+                    <li style="border-bottom: 1px solid #eee; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;">
+                        
+                        <div style="flex-grow: 1;">
+                            <span style="background: #ffc107; color: #856404; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; font-weight: bold; margin-right: 10px;">
+                                {{ post.get_category_display }}
+                            </span>
+                            
+                            <a href="{% url 'announcement_detail' post.pk %}" style="text-decoration: none; color: #0056b3; font-weight: bold; font-size: 1.1em;">
+                                {{ post.title }}
+                            </a>
+                            
+                            <div style="margin-top: 5px;">
+                                {% for tag in post.tags.all %}
+                                    <span style="background: #e9ecef; color: #495057; padding: 2px 8px; border-radius: 12px; font-size: 0.75em; margin-right: 5px;">#{{ tag.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div style="color: #888; font-size: 0.9em; white-space: nowrap; margin-left: 15px;">
+                            {{ post.created_at|date:"Y-m-d" }}
+                        </div>
+                    </li>
+                {% empty %}
+                    <li style="padding: 20px; text-align: center; color: #666;">找不到符合條件的公告。</li>
+                {% endfor %}
+            </ul>
+
+            <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 30px;">🏀 系隊與團體分頁</h3>
+            <div class="team-grid">
+                {% for team in teams %}
+                    <div class="team-card">
+                        <a href="{% url 'team_detail' team.id %}">{{ team.name }}</a>
+                        <p style="color: #666; margin: 0; font-size: 0.9em;">{{ team.description }}</p>
+                    </div>
+                {% empty %}
+                    <p>目前還沒有建立任何系隊。</p>
+                {% endfor %}
+            </div>
+            
+        </div> <div style="flex: 1; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); position: sticky; top: 20px; min-width: 250px;">
+            <h3 style="margin-top: 0; color: #333; font-size: 1.1em; border-bottom: 2px solid #007bff; padding-bottom: 5px;">📌 系上資訊</h3>
+            
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="margin-bottom: 15px;">
+                    <a href="{% url 'curriculum_page' %}" style="text-decoration: none; color: #0056b3; font-weight: bold; display: flex; align-items: center;">
+                        🎓 修業規定與課程地圖
+                    </a>
+                    <p style="font-size: 0.8em; color: #666; margin: 5px 0 0 0;">106學年度起適用，畢業 137 學分計算方式。</p>
+                </li>
+                
+                <li style="margin-bottom: 15px;">
+                    <a href="{% url 'calendar_page' %}" style="text-decoration: none; color: #0056b3; font-weight: bold; display: flex; align-items: center;">
+                        📅 系上行事曆
+                    </a>
+                    <p style="font-size: 0.8em; color: #666; margin: 5px 0 0 0;">系學會活動與各系隊賽程。</p>
+                </li>
+            </ul>
+        </div> </div> </body>
+</html>

@@ -1,0 +1,9 @@
+<body>
+    <h1>編輯 {{ team.name }} 資訊</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label>系隊簡介：</label><br>
+        <textarea name="description" rows="5" style="width: 100%;">{{ team.description }}</textarea><br><br>
+        <button type="submit">儲存修改</button>
+    </form>
+</body>

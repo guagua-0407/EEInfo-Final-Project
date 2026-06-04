@@ -1,0 +1,16 @@
+<body>
+    <h1>為 {{ team.name }} 新增活動</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label>活動名稱：</label><br>
+        <input type="text" name="title" required><br><br>
+        
+        <label>開始時間：</label><br>
+        <input type="datetime-local" name="start_time" required><br><br>
+        
+        <label>結束時間：</label><br>
+        <input type="datetime-local" name="end_time" required><br><br>
+        
+        <button type="submit">確認新增並同步至大行事曆</button>
+    </form>
+</body>

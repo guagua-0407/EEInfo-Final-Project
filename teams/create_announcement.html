@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+    <html lang="zh-TW">
+    <head>
+        <meta charset="UTF-8">
+        <title>發布公告</title>
+        <style>
+            body { font-family: sans-serif; max-width: 600px; margin: 40px auto; }
+            .form-group { margin-bottom: 15px; }
+            label { display: block; margin-bottom: 5px; font-weight: bold; }
+            input[type="text"], textarea { width: 100%; padding: 8px; box-sizing: border-box; }
+            button { background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; }
+        </style>
+    </head>
+    <body>
+        <h1>為 {{ team.name }} 發布新公告</h1>
+        <form method="POST">
+            {% csrf_token %} <!-- 必須加這行，Django 安全機制，防跨站請求攻擊 -->
+            <div class="form-group">
+                <label>公告標題</label>
+                <input type="text" name="title" required>
+            </div>
+            <div class="form-group">
+                <label>公告內容</label>
+                <textarea name="content" rows="6" required></textarea>
+            </div>
+            <button type="submit">確認發布</button>
+        </form>
+        <br>
+        <a href="{% url 'team_detail' team.id %}">返回</a>
+    </body>
+    </html>
+    ```

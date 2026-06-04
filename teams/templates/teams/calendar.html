@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>活動行事曆 - 台灣大學電機系學生網站</title>
+    
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    
+    <style>
+        body { font-family: sans-serif; background: #f9f9f9; padding: 20px; }
+        .calendar-container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .back-btn { display: inline-block; margin-bottom: 20px; padding: 10px 15px; background: #6c757d; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="calendar-container">
+        <a href="{% url 'team_list' %}" class="back-btn">⬅ 返回首頁</a>
+        <h2 style="text-align: center;">📅 電機系活動行事曆</h2>
+        
+        <div id='calendar'></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth', // 預設顯示月曆
+                locale: 'zh-tw', // 設定為繁體中文
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek' // 允許切換月曆/週曆
+                },
+                // 這裡最重要！告訴它去哪裡抓資料
+                events: '/teams/api/events/', 
+                
+                // 點擊活動時的行為
+                eventClick: function(info) {
+                    if (info.event.url) {
+                        window.open(info.event.url, '_self');
+                        info.jsEvent.preventDefault(); // 防止預設行為
+                    }
+                }
+            });
+            
+            calendar.render();
+        });
+    </script>
+</body>
+</html>
