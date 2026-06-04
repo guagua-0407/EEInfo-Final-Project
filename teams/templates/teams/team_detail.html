@@ -1,15 +1,35 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    </head>
+    <meta charset="UTF-8">
+    <title>{{ team.name }} - 台灣大學電機系學生網站</title>
+    <style>
+        body { font-family: sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .btn { background: #007bff; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; display: inline-block; }
+        .btn-logout { background: #dc3545; }
+        .back-btn { display: inline-block; margin-bottom: 20px; padding: 10px 15px; background: #6c757d; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 25px; }
+        .card ul { margin: 0; padding-left: 20px; }
+        .card li { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .card li:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        
+        .announcement { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+        .announcement:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    </style>
+</head>
 <body>
+
+    <a href="{% url 'team_list' %}" class="back-btn">⬅ 返回首頁</a>
+
     <div class="card">
-        <h1>{{ team.name }}</h1>
-        <p>{{ team.description }}</p>
+        <h1 style="color: #0056b3; margin-top: 0;">{{ team.name }}</h1>
+        <p style="font-size: 1.1em; line-height: 1.5; color: #333;">{{ team.description }}</p>
 
         {% if can_edit %}
-            <div style="background: #e9ecef; padding: 15px; border-radius: 5px; margin-top: 15px;">
-                <strong style="color: #495057;">🔧 管理員控制台：</strong>
+            <div style="background: #e9ecef; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                <strong style="color: #495057; display: block; margin-bottom: 10px;">🔧 管理員控制台：</strong>
                 <a href="{% url 'edit_team' team.id %}" class="btn" style="background: #6c757d;">編輯簡介</a>
                 <a href="{% url 'create_announcement' team.id %}" class="btn">發布公告</a>
                 <a href="{% url 'create_event' team.id %}" class="btn" style="background: #28a745;">新增活動到行事曆</a>
@@ -17,24 +37,31 @@
         {% endif %}
     </div>
 
-    <h2>📅 近期活動</h2>
+    <h2 style="border-bottom: 2px solid #ccc; padding-bottom: 5px; color: #333;">📅 近期活動</h2>
     <div class="card">
         <ul>
             {% for event in team_events %}
                 <li>
-                    <strong>{{ event.title }}</strong><br>
-                    <small>時間：{{ event.start_time|date:"Y-m-d H:i" }} ~ {{ event.end_time|date:"Y-m-d H:i" }}</small>
+                    <strong style="font-size: 1.1em; color: #0056b3;">{{ event.title }}</strong><br>
+                    <small style="color: #666; font-size: 0.9em; display: block; margin-top: 5px;">📍 時間：{{ event.start_time|date:"Y-m-d H:i" }} ~ {{ event.end_time|date:"Y-m-d H:i" }}</small>
                 </li>
             {% empty %}
-                <p>目前沒有即將到來的活動。</p>
+                <p style="color: #666;">目前沒有即將到來的活動。</p>
             {% endfor %}
         </ul>
     </div>
 
-    <h2>📢 最新公告</h2>
+    <h2 style="border-bottom: 2px solid #ccc; padding-bottom: 5px; color: #333;">📢 最新公告</h2>
     <div class="card">
         {% for info in announcements %}
-            {% endfor %}
+            <div class="announcement">
+                <h3 style="margin: 0 0 5px 0; color: #0056b3;">{{ info.title }}</h3>
+                <small style="color: #888;">發布者：{{ info.author }} | 日期：{{ info.created_at|date:"Y-m-d H:i" }}</small>
+                <div style="margin-top: 10px; line-height: 1.5; color: #444;">{{ info.content|linebreaks }}</div>
+            </div>
+        {% empty %}
+            <p style="color: #666;">目前沒有公告。</p>
+        {% endfor %}
     </div>
 </body>
 </html>
