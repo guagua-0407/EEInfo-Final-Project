@@ -40,9 +40,9 @@ source venv/bin/activate
 ```
 
 ### 2. 安裝相依套件
-在啟動虛擬環境的狀態下，安裝 Django：
+在啟動虛擬環境的狀態下，安裝所有相依套件：
 ```bash
-pip install django
+pip install -r requirements.txt
 ```
 
 ### 3. 資料庫初始化
