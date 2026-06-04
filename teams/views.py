@@ -18,7 +18,7 @@ def get_events(request):
             'start': localtime(event.start_time).isoformat(), 
             'end': localtime(event.end_time).isoformat(),
             # 如果這個活動有綁定系隊，點擊活動就跳轉到該系隊頁面
-            'url': f'/teams/{event.team.id}/' if event.team else '',
+            'url': f'/team/{event.team.id}/' if event.team else '',
         })
         
     return JsonResponse(event_list, safe=False)
