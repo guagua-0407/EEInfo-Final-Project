@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.utils.timezone import localtime
 from .models import Team, Announcement, DepartmentAnnouncement, Event, Tag
+import csv
+import os
+from openpyxl import load_workbook
 
 def calendar_page(request):
     return render(request, 'teams/calendar.html')
@@ -15,10 +17,10 @@ def get_events(request):
         event_list.append({
             'title': event.title,
             # ISO 格式是 FullCalendar 看得懂的時間格式
-            'start': localtime(event.start_time).isoformat(), 
-            'end': localtime(event.end_time).isoformat(),
+            'start': event.start_time.isoformat(), 
+            'end': event.end_time.isoformat(),
             # 如果這個活動有綁定系隊，點擊活動就跳轉到該系隊頁面
-            'url': f'/team/{event.team.id}/' if event.team else '',
+            'url': f'/teams/{event.team.id}/' if event.team else '',
         })
         
     return JsonResponse(event_list, safe=False)
@@ -172,4 +174,17 @@ def create_department_announcement(request):
     return render(request, 'teams/create_department_announcement.html', {
         'all_tags': all_tags,
         'categories': categories,
+    })
+
+def ntu_calendar_page(request):
+    # 自動抓取專案根目錄，並組合出 xlsx 的絕對路徑
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    xlsx_path = os.path.join(project_root, 'data', 'ntu_calendar.xlsx')
+    
+    file_exists = os.path.exists(xlsx_path)
+    download_url = '/static/data/ntu_calendar.xlsx' if file_exists else None
+
+    return render(request, 'teams/ntu_calendar.html', {
+        'file_exists': file_exists,
+        'download_url': download_url
     })

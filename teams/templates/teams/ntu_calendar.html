@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>臺大官方行事曆 - 台灣大學電機系學生網站</title>
+    <style>
+        * { margin: 0; padding: 0; }
+        body { font-family: sans-serif; background: #f9f9f9; }
+        .navbar { background: white; padding: 15px 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; gap: 10px; align-items: center; }
+        .back-btn { padding: 8px 15px; background: #6c757d; color: white; text-decoration: none; border-radius: 5px; }
+        .open-btn { padding: 8px 15px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; }
+        .open-btn:hover { background: #218838; }
+        .title { color: #666; font-size: 0.9em; }
+        
+        #container { height: calc(100vh - 70px); width: 100%; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'team_list' %}" class="back-btn">⬅ 返回首頁</a>
+        <a href="https://docs.google.com/spreadsheets/d/17yLq82kOmjtfcVTlq27HgVe4cpyQGsW6/edit?usp=sharing" target="_blank" class="open-btn">
+            🔗 在新分頁開啟
+        </a>
+        <span class="title">🏫 臺灣大學 115 學年度官方行事曆</span>
+    </div>
+    
+    <div id="container">
+        <iframe 
+            src="https://docs.google.com/spreadsheets/d/17yLq82kOmjtfcVTlq27HgVe4cpyQGsW6/preview">
+        </iframe>
+    </div>
+</body>
+</html>

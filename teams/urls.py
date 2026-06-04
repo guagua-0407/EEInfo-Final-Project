@@ -12,6 +12,10 @@ urlpatterns = [
     path('announcement/<int:pk>/', views.announcement_detail, name='announcement_detail'),
     path('announcement/create/', views.create_department_announcement, name='create_department_announcement'),
     path('curriculum/', views.curriculum_page, name='curriculum_page'),
+    
+    # 台大官方行事曆
+    path('ntu-calendar/', views.ntu_calendar_page, name='ntu_calendar_page'),
+    
     # 個別系隊頁面 (為了網址好看，加上 team/ 前綴)
     path('team/<int:team_id>/', views.team_detail, name='team_detail'),
     path('team/<int:team_id>/announce/', views.create_announcement, name='create_announcement'),
