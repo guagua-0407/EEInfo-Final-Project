@@ -139,3 +139,36 @@ def announcement_detail(request, pk):
 # teams/views.py 新增這行：
 def curriculum_page(request):
     return render(request, 'teams/curriculum.html')
+
+@login_required
+def create_department_announcement(request):
+    if request.method == "POST":
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        category = request.POST.get('category', 'notice')
+        author_name = request.POST.get('author_name', '')
+        
+        # 建立一個臨時使用者或直接存儲名字
+        announcement = DepartmentAnnouncement.objects.create(
+            title=title,
+            content=content,
+            category=category,
+            author=request.user if request.user.is_authenticated else None
+        )
+        
+        # 如果有提交標籤，就加上去
+        tag_names = request.POST.getlist('tags')
+        for tag_name in tag_names:
+            if tag_name:
+                tag, _ = Tag.objects.get_or_create(name=tag_name)
+                announcement.tags.add(tag)
+        
+        return redirect('team_list')
+    
+    all_tags = Tag.objects.all()
+    categories = DepartmentAnnouncement.CATEGORY_CHOICES
+    
+    return render(request, 'teams/create_department_announcement.html', {
+        'all_tags': all_tags,
+        'categories': categories,
+    })

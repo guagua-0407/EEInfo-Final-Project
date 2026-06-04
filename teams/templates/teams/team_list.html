@@ -44,6 +44,10 @@
             
             <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 0;">📢 系級公告</h3>
             
+            <div style="background: #e8f4f8; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <a href="{% url 'create_department_announcement' %}" class="btn" style="background: #28a745; margin-bottom: 15px;">📝 發布新公告</a>
+            </div>
+            
             <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                 <strong>📁 分類：</strong>
                 <a href="{% url 'team_list' %}" class="btn" style="padding: 4px 8px; font-size: 0.9em; {% if not current_category and not current_tag %}background: #0056b3;{% endif %}">全部</a>
