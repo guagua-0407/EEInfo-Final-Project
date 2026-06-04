@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.utils.timezone import localtime
 from .models import Team, Announcement, DepartmentAnnouncement, Event, Tag
 
 def calendar_page(request):
@@ -14,8 +15,8 @@ def get_events(request):
         event_list.append({
             'title': event.title,
             # ISO 格式是 FullCalendar 看得懂的時間格式
-            'start': event.start_time.isoformat(), 
-            'end': event.end_time.isoformat(),
+            'start': localtime(event.start_time).isoformat(), 
+            'end': localtime(event.end_time).isoformat(),
             # 如果這個活動有綁定系隊，點擊活動就跳轉到該系隊頁面
             'url': f'/teams/{event.team.id}/' if event.team else '',
         })
